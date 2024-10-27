@@ -13,39 +13,46 @@ let keyEmail = "email_key"
 
 struct Onboarding: View {
     
+    @State var isLoggedIn = false
+    
     @State var firstName: String = ""
     @State var lastName: String = ""
     @State var email: String = ""
     
     
     var body: some View {
-        VStack(spacing: 16) {
-            Text("Login")
-                .font(.largeTitle)
-                .padding([.bottom], 8)
-            Group {
-                TextField("First Name",
-                          text: $firstName)
-                TextField("Last Name",
-                          text: $lastName)
-                TextField("Email",
-                          text: $email)
-                .keyboardType(.emailAddress)
-                .disableAutocorrection(true)
+        NavigationView {
+            VStack(spacing: 16) {
+                NavigationLink(destination: Home(), isActive: $isLoggedIn) {
+                    EmptyView()
+                }
+                Text("Login")
+                    .font(.largeTitle)
+                    .padding([.bottom], 8)
+                Group {
+                    TextField("First Name",
+                              text: $firstName)
+                    TextField("Last Name",
+                              text: $lastName)
+                    TextField("Email",
+                              text: $email)
+                    .keyboardType(.emailAddress)
+                    .disableAutocorrection(true)
+                }
+                .font(.title3)
+                .textFieldStyle(.roundedBorder)
+                .padding([.horizontal], 32)
+                
+                Button {
+                    onRegister()
+                } label: {
+                    Text("Register")
+                }
+                .disabled(!isValidationSuccess)
+                .buttonStyle(.borderedProminent)
+                .font(.title3)
+                .padding([.top], 16)
             }
-            .font(.title3)
-            .textFieldStyle(.roundedBorder)
-            .padding([.horizontal], 32)
-            
-            Button {
-                onRegister()
-            } label: {
-                Text("Register")
-            }
-            .disabled(!isValidationSuccess)
-            .buttonStyle(.borderedProminent)
-            .font(.title3)
-            .padding([.top], 16)
         }
     }
     
@@ -73,6 +80,8 @@ extension Onboarding {
         UserDefaults.standard.set(firstName, forKey: keyFirstName)
         UserDefaults.standard.set(lastName, forKey: keyLastName)
         UserDefaults.standard.set(email, forKey: keyEmail)
+        
+        isLoggedIn = true
     }
 }
 
