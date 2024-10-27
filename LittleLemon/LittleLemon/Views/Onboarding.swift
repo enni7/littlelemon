@@ -10,6 +10,7 @@ import SwiftUI
 let keyFirstName = "first_name_key"
 let keyLastName = "last_name_key"
 let keyEmail = "email_key"
+let keyIsLoggedIn = "is_logged_in_key"
 
 struct Onboarding: View {
     
@@ -37,8 +38,9 @@ struct Onboarding: View {
                     TextField("Email",
                               text: $email)
                     .keyboardType(.emailAddress)
-                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
                 }
+                .disableAutocorrection(true)
                 .font(.title3)
                 .textFieldStyle(.roundedBorder)
                 .padding([.horizontal], 32)
@@ -52,6 +54,11 @@ struct Onboarding: View {
                 .buttonStyle(.borderedProminent)
                 .font(.title3)
                 .padding([.top], 16)
+            }
+            .onAppear {
+                if UserDefaults.standard.bool(forKey: keyIsLoggedIn) {
+                    isLoggedIn = true
+                }
             }
         }
     }
@@ -80,8 +87,9 @@ extension Onboarding {
         UserDefaults.standard.set(firstName, forKey: keyFirstName)
         UserDefaults.standard.set(lastName, forKey: keyLastName)
         UserDefaults.standard.set(email, forKey: keyEmail)
-        
+
         isLoggedIn = true
+        UserDefaults.standard.set(true, forKey: keyIsLoggedIn)
     }
 }
 
