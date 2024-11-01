@@ -20,9 +20,11 @@ struct Home: View {
                 EmptyView()
             }
                            .isDetailLink(false)
-            HeaderView {
+            HeaderView(showImage: true,
+                       showBack: false,
+                       onProfileTap:  {
                 showProfile = true
-            }
+            })
             Menu()
         }
         .navigationBarBackButtonHidden(true)

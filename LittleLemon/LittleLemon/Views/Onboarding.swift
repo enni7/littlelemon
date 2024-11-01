@@ -29,7 +29,9 @@ struct Onboarding: View {
                     EmptyView()
                 }
                                .isDetailLink(false)
-                
+                HeaderView(showImage: false,
+                           showBack: false)
+
                 HeroView()
                     .padding([.vertical], 24)
                     .background {

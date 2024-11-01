@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct UserProfile: View {
-    
+    @Environment(\.presentationMode) var presentation
+
     @Binding var shouldPopToRootView : Bool
     @State var showAlert = false
     
@@ -17,42 +18,51 @@ struct UserProfile: View {
     let email = UserDefaults.standard.string(forKey: keyEmail)
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Personal information")
-                .font(.title3)
-                .padding([.bottom], 16)
-            Image("profile-image-placeholder")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 80, height: 80)
-                .padding([.bottom], 16)
-            Group {
-                Text(firstName ?? "-")
-                Text(lastName ?? "-")
-                Text(email ?? "-")
-            }
-            .font(.subheadline)
-            .padding([.bottom], 8)
-
-            HStack{
+        VStack {
+            HeaderView(showImage: true,
+                       showBack: true,
+                       onBackTapped:  {
+                self.presentation.wrappedValue.dismiss()
+            })
+            
+            VStack(alignment: .leading) {
+                Text("Personal information")
+                    .font(.title3)
+                    .padding([.bottom], 16)
+                ProfileImageView()
+                    .frame(width: 80, height: 80)
+                    .padding([.bottom], 16)
+                
+                Group {
+                    Text(firstName ?? "-")
+                    Text(lastName ?? "-")
+                    Text(email ?? "-")
+                }
+                .font(.subheadline)
+                .padding([.bottom], 8)
+                
                 Spacer()
+                
                 Button {
                     showAlert = true
                 } label: {
-                    Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
+                    HStack{
+                        Spacer()
+                        Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
+                        Spacer()
+                    }
                 }
                 .buttonStyle(.borderedProminent)
-                Spacer()
+                .padding([.bottom], 32)
             }
-            .padding([.top], 32)
-            Spacer()
+            .frame(minWidth: 0,
+                   maxWidth: .infinity,
+                   alignment: .topLeading)
+            .padding([.horizontal], 24)
+            .padding([.vertical], 8)
         }
-        .frame(minWidth: 0,
-               maxWidth: .infinity,
-               alignment: .topLeading)
-        .padding([.horizontal], 24)
-        .padding([.vertical], 8)
-
+        .navigationBarBackButtonHidden(true)
+        
         .alert("Logout", isPresented: $showAlert, actions: {
             Button("Cancel", role: .cancel) {
                 showAlert = false

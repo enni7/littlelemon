@@ -11,7 +11,8 @@ struct Menu: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @State var searchText = ""
-    
+    @State var activeFilter: MenuCategory?
+
     var body: some View {
         
         VStack(alignment: .leading){
@@ -30,6 +31,12 @@ struct Menu: View {
                 Color.greenBg
             }
             
+            MenuBreakdown(activeFilter: $activeFilter)
+                .padding([.horizontal], 24)
+                .padding([.vertical], 12)
+
+            Divider()
+            
             FetchedObjects(predicate: buildPredicate(),
                            sortDescriptors: buildSortDescriptors()) { (dishes: [Dish]) in
                 List {
@@ -38,7 +45,7 @@ struct Menu: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("\(dish.title ?? "-")")
                                 Text("\(dish.category ?? "-")".capitalized)
-                                    .font(.subheadline)
+                                    .font(.caption)
                             }
                             Spacer()
                             Text("\(dish.price ?? "") $")
@@ -54,6 +61,9 @@ struct Menu: View {
                                              leading: 24,
                                              bottom: 12,
                                              trailing: 24))
+                        .alignmentGuide(.listRowSeparatorTrailing) { d in
+                            d[.trailing]
+                        }
                     }
                 }
                 .listStyle(.inset)
@@ -74,9 +84,19 @@ struct Menu: View {
 extension Menu {
     
     ///Filter elements
-    private func buildPredicate() -> NSPredicate {
-        guard !searchText.isEmpty else { return NSPredicate(value: true)}
-        return NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+    private func buildPredicate() -> NSCompoundPredicate {
+        var subpredicates: [NSPredicate] = []
+        if !searchText.isEmpty {
+            let searchPredicate = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+            subpredicates.append(searchPredicate)
+        }
+        if let activeFilter = activeFilter {
+            let filterPredicate = NSPredicate(format: "category MATCHES[cd] %@", activeFilter.rawValue)
+            subpredicates.append(filterPredicate)
+        }
+        let finalPredicate: NSCompoundPredicate = .init(type: .and,
+                                                        subpredicates: subpredicates)
+        return finalPredicate
     }
     
     ///Sort elements
