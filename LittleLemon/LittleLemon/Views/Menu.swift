@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct Menu: View {
+    
     @Environment(\.managedObjectContext) private var viewContext
+    @State var searchText = ""
     
     var body: some View {
         
@@ -25,7 +27,16 @@ struct Menu: View {
             .padding([.horizontal], 24)
             .padding([.bottom], 8)
 
-            FetchedObjects { (dishes: [Dish]) in
+            TextField("Search menu", text: $searchText)
+                .padding(8)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .foregroundStyle(.ultraThinMaterial)
+                )
+                .padding([.horizontal], 24)
+            
+            FetchedObjects(predicate: buildPredicate(),
+                           sortDescriptors: buildSortDescriptors()) { (dishes: [Dish]) in
                 List {
                     ForEach(dishes) { dish in
                         HStack {
@@ -44,12 +55,18 @@ struct Menu: View {
                             .frame(width: 50,
                                    height: 50)
                         }
+                        .listRowInsets(.init(top: 12,
+                                             leading: 24,
+                                             bottom: 12,
+                                             trailing: 24))
                     }
                 }
                 .listStyle(.inset)
                 .refreshable {
                     getMenuData()
                 }
+                .searchable(text: $searchText,
+                            prompt: "Search food")
             }
             Spacer()
         }
@@ -62,11 +79,26 @@ struct Menu: View {
 
 // MARK: Handle Core Data
 extension Menu {
+    
+    ///Filter elements
+    private func buildPredicate() -> NSPredicate {
+        guard !searchText.isEmpty else { return NSPredicate(value: true)}
+        return NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+    }
+    
+    ///Sort elements
+    private func buildSortDescriptors() -> [NSSortDescriptor]{
+        return [NSSortDescriptor(key: "title",
+                                 ascending: true,
+                                 selector: #selector(NSString.localizedStandardCompare))]
+    }
+    
     private func getMenuDataIfNeeded(){
         guard PersistenceController.shared.isEmpty() ?? true else { return }
         getMenuData()
     }
     
+    ///Retrieve and save menu data
     private func getMenuData(){
 
         PersistenceController.shared.clear()
