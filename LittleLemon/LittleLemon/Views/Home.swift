@@ -10,27 +10,29 @@ import SwiftUI
 struct Home: View {
     
     let persistence = PersistenceController.shared
+    @State var showProfile: Bool = false
+    @Binding var rootIsActive : Bool
 
     var body: some View {
-        TabView() {
+        VStack{
+            NavigationLink(destination: UserProfile(shouldPopToRootView: $rootIsActive),
+                           isActive: $showProfile) {
+                EmptyView()
+            }
+                           .isDetailLink(false)
+            HeaderView {
+                showProfile = true
+            }
             Menu()
-                .tabItem {
-                    Label("Menu",
-                          systemImage: "list.dash")
-                }
-            UserProfile()
-                .tabItem {
-                    Label("Profile",
-                          systemImage: "square.and.pencil")
-                }
         }
         .navigationBarBackButtonHidden(true)
-        .environment(\.managedObjectContext, persistence.container.viewContext)
+        .environment(\.managedObjectContext,
+                      persistence.container.viewContext)
     }
 }
 
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
-        Home()
+        Home(rootIsActive: .constant(false))
     }
 }

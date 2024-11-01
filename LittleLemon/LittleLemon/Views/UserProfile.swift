@@ -9,9 +9,8 @@ import SwiftUI
 
 struct UserProfile: View {
     
-    @Environment(\.presentationMode) var presentation
-
-//    @State var showAlert = false
+    @Binding var shouldPopToRootView : Bool
+    @State var showAlert = false
     
     let firstName = UserDefaults.standard.string(forKey: keyFirstName)
     let lastName = UserDefaults.standard.string(forKey: keyLastName)
@@ -38,7 +37,7 @@ struct UserProfile: View {
             HStack{
                 Spacer()
                 Button {
-                    onLogout()
+                    showAlert = true
                 } label: {
                     Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
                 }
@@ -54,7 +53,6 @@ struct UserProfile: View {
         .padding([.horizontal], 24)
         .padding([.vertical], 8)
 
-        /*
         .alert("Logout", isPresented: $showAlert, actions: {
             Button("Cancel", role: .cancel) {
                 showAlert = false
@@ -66,7 +64,6 @@ struct UserProfile: View {
         }) {
             Text("Are you sure you want to logout?")
         }
-         */
     }
 }
 
@@ -76,12 +73,12 @@ extension UserProfile {
         UserDefaults.standard.set(nil, forKey: keyLastName)
         UserDefaults.standard.set(nil, forKey: keyEmail)
         UserDefaults.standard.set(false, forKey: keyIsLoggedIn)
-        self.presentation.wrappedValue.dismiss()
+        self.shouldPopToRootView = false
     }
 }
 
 struct UserProfile_Previews: PreviewProvider {
     static var previews: some View {
-        UserProfile()
+        UserProfile(shouldPopToRootView: .constant(false))
     }
 }

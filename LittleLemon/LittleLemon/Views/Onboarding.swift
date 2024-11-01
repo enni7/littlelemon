@@ -24,12 +24,19 @@ struct Onboarding: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 16) {
-                NavigationLink(destination: Home(), isActive: $isLoggedIn) {
+                NavigationLink(destination: Home(rootIsActive: $isLoggedIn),
+                               isActive: $isLoggedIn) {
                     EmptyView()
                 }
-                Text("Login")
-                    .font(.largeTitle)
-                    .padding([.bottom], 8)
+                               .isDetailLink(false)
+                
+                HeroView()
+                    .padding([.vertical], 24)
+                    .background {
+                        Color.greenBg
+                    }
+                Spacer()
+
                 Group {
                     TextField("First Name",
                               text: $firstName)
@@ -44,6 +51,10 @@ struct Onboarding: View {
                 .font(.title3)
                 .textFieldStyle(.roundedBorder)
                 .padding([.horizontal], 32)
+                
+                Spacer()
+                Spacer()
+                Spacer()
                 
                 Button {
                     onRegister()

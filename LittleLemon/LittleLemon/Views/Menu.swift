@@ -15,25 +15,20 @@ struct Menu: View {
     var body: some View {
         
         VStack(alignment: .leading){
-            VStack(alignment: .leading) {
-                Text("Little Lemon")
-                    .font(.title)
-                Text("Chicago")
-                    .fontWeight(.light)
-                    .padding([.bottom], 4)
-                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
-                    .font(.subheadline)
+            VStack(alignment: .leading){
+                HeroView()
+                TextField("Search menu", text: $searchText)
+                    .padding(8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .foregroundStyle(.ultraThinMaterial)
+                    )
+                    .padding([.horizontal], 24)
             }
-            .padding([.horizontal], 24)
-            .padding([.bottom], 8)
-
-            TextField("Search menu", text: $searchText)
-                .padding(8)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .foregroundStyle(.ultraThinMaterial)
-                )
-                .padding([.horizontal], 24)
+            .padding([.vertical], 24)
+            .background {
+                Color.greenBg
+            }
             
             FetchedObjects(predicate: buildPredicate(),
                            sortDescriptors: buildSortDescriptors()) { (dishes: [Dish]) in
@@ -65,8 +60,6 @@ struct Menu: View {
                 .refreshable {
                     getMenuData()
                 }
-                .searchable(text: $searchText,
-                            prompt: "Search food")
             }
             Spacer()
         }
