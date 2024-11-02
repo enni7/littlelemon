@@ -68,6 +68,7 @@ struct Onboarding: View {
                 .font(.title3)
                 .padding([.top], 16)
             }
+            .navigationBarHidden(true)
             .onAppear {
                 if UserDefaults.standard.bool(forKey: keyIsLoggedIn) {
                     isLoggedIn = true

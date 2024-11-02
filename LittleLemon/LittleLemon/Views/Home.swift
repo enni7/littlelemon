@@ -28,6 +28,7 @@ struct Home: View {
             Menu()
         }
         .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
         .environment(\.managedObjectContext,
                       persistence.container.viewContext)
     }

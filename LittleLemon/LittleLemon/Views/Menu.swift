@@ -73,6 +73,7 @@ struct Menu: View {
             }
             Spacer()
         }
+        .navigationBarHidden(true)
         .onAppear{
             getMenuDataIfNeeded()
         }
