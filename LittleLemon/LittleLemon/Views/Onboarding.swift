@@ -24,12 +24,21 @@ struct Onboarding: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 16) {
-                NavigationLink(destination: Home(), isActive: $isLoggedIn) {
+                NavigationLink(destination: Home(rootIsActive: $isLoggedIn),
+                               isActive: $isLoggedIn) {
                     EmptyView()
                 }
-                Text("Login")
-                    .font(.largeTitle)
-                    .padding([.bottom], 8)
+                               .isDetailLink(false)
+                HeaderView(showImage: false,
+                           showBack: false)
+
+                HeroView()
+                    .padding([.vertical], 24)
+                    .background {
+                        Color.greenBg
+                    }
+                Spacer()
+
                 Group {
                     TextField("First Name",
                               text: $firstName)
@@ -45,6 +54,10 @@ struct Onboarding: View {
                 .textFieldStyle(.roundedBorder)
                 .padding([.horizontal], 32)
                 
+                Spacer()
+                Spacer()
+                Spacer()
+                
                 Button {
                     onRegister()
                 } label: {
@@ -55,6 +68,7 @@ struct Onboarding: View {
                 .font(.title3)
                 .padding([.top], 16)
             }
+            .navigationBarHidden(true)
             .onAppear {
                 if UserDefaults.standard.bool(forKey: keyIsLoggedIn) {
                     isLoggedIn = true

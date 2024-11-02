@@ -13,3 +13,10 @@ struct MenuItem: Decodable {
     let price: String?
     let category: String?
 }
+
+enum MenuCategory: String, CaseIterable {
+    case starters
+    case mains
+    case desserts
+    case drinks
+}
